@@ -13,10 +13,11 @@ class App extends React.Component {
   }
 
   getSpringGeometry(data) {
+    console.log(data.length);
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
     geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-    geometry.setDrawRange(0, data.length);
+    // geometry.setDrawRange(0, 3900);
     return geometry;
   }
 
@@ -48,9 +49,9 @@ class App extends React.Component {
     const incr = stalaxDf;
     const T = stalaxDf;
     const U = stalaxDf;
-    for (let t = 0, i = 0; t < 8 * PI; t += T, i++) {
+    for (let t = 0, i = 0; t + incr < 8 * PI; t += T, i++) {
       points.push([]);
-      for (let u = 0; u < 2 * PI; u += U) {
+      for (let u = 0; u + incr < 2 * PI; u += U) {
         const x1 = Math.sin(t) * (3 + Math.cos(u));
         const y1 = Math.cos(t) * (3 + Math.cos(u));
         const z1 = 0.6 * t * distance + Math.sin(u);
@@ -140,7 +141,7 @@ class App extends React.Component {
           pos[i] = newSpringPoints[i];
         }
         //11934, 5968
-        spring.geometry.setDrawRange(0, 200);
+        // spring.geometry.setDrawRange(0, 200);
         spring.geometry.attributes.position.needsUpdate = true;
         spring.geometry.computeBoundingBox();
         spring.geometry.computeBoundingSphere();
