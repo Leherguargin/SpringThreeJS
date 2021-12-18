@@ -4,14 +4,6 @@ import React from "react";
 import * as THREE from "three";
 
 class App extends React.Component {
-  getCube(x, y, z) {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x7e31eb });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(x, y, z);
-    return cube;
-  }
-
   getBall(x, y, z, r, color = "#00ff00") {
     const geometry = new THREE.SphereGeometry(r, 32, 16);
     const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -45,33 +37,7 @@ class App extends React.Component {
     return newPoints.flat();
   }
 
-  //points - two dimensional array of vertices(n x 3)
-  getLine(points, color) {
-    const material = new THREE.LineBasicMaterial({ color });
-    const geometry = new THREE.BufferGeometry().setFromPoints(
-      this.pointsToVector3(points)
-    );
-    const line = new THREE.Line(geometry, material);
-    return line;
-  }
-
-  pointsToVector3(points) {
-    const vectors = points.map(
-      (point) => new THREE.Vector3(point[0], point[1], point[2])
-    );
-    return vectors;
-  }
-
-  getTexture(addr = "./resources/gray.png") {
-    const texture = new THREE.TextureLoader().load(addr);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(4, 4);
-    return texture;
-  }
-
   getSpiral(distance) {
-    //generate points
     const points = [[]];
     const PI = Math.PI;
     const incr = 0.1;
@@ -145,11 +111,10 @@ class App extends React.Component {
     const ball = this.getBall(0, -9, 0, 5);
     scene.add(ball);
 
-    // const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
-    let dis = 0;
+    // let dis = 0;
     let inc = false;
     const animate = () => {
       // const pos = spiral.geometry.attributes.position.array;
