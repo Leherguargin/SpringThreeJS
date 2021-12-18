@@ -44,10 +44,10 @@ class App extends React.Component {
   getSpringPoints(distance) {
     const points = [[]];
     const PI = Math.PI;
-    const stalaxDf = 0.5;
-    const incr = stalaxDf;
-    const T = stalaxDf;
-    const U = stalaxDf;
+    const combine = 0.25;
+    const incr = combine;
+    const T = combine;
+    const U = combine;
     for (let t = 0, i = 0; t + incr < 8 * PI; t += T, i++) {
       points.push([]);
       for (let u = 0; u < 2 * PI; u += U) {
@@ -111,13 +111,6 @@ class App extends React.Component {
     scene.add(spring);
     spring.rotation.x = Math.PI / 2;
     spring.position.set(0, 18, 0);
-
-    // const geometry = this.getSpringGeometry(this.getSpringPoints(1));
-    // const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
-    // const spring = new THREE.Line(geometry, material);
-    // spring.rotation.x = Math.PI / 2;
-    // spring.position.set(0, 18, 0);
-    // scene.add(spring);
 
     const ball = this.getBall(0, -9, 0, 5);
     scene.add(ball);
