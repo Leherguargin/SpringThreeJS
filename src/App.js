@@ -125,26 +125,31 @@ class App extends React.Component {
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
-    let distance = 2;
+    let distance = 1;
     let incFlag = false;
-    let inc = 0.8;
+    let inc = 0.01;
     const animate = () => {
       const positions = spring.geometry.attributes.position.array;
       if (ball.position.y < -20 || ball.position.y > -6) {
         incFlag = !incFlag;
       }
       if (incFlag) {
-        // distance += inc;
+        distance += inc;
         const newPoints = this.getSpringPoints(distance);
         for (let i = 0; i < newPoints.length; i++) {
           positions[i] = newPoints[i];
         }
-        spring.geometry.attributes.position.needsUpdate = true;
         ball.position.y -= inc;
       } else {
+        distance -= inc;
+        const newPoints = this.getSpringPoints(distance);
+        for (let i = 0; i < newPoints.length; i++) {
+          positions[i] = newPoints[i];
+        }
         ball.position.y += inc;
       }
 
+      spring.geometry.attributes.position.needsUpdate = true;
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
