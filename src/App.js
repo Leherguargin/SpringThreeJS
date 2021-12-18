@@ -47,20 +47,20 @@ class App extends React.Component {
       points.push([]);
       for (let u = 0; u < 2 * PI; u += U) {
         const x1 = Math.sin(t) * (3 + Math.cos(u));
-        const y1 = Math.cos(t) * (3 + Math.cos(u)) + distance;
-        const z1 = 0.6 * t + Math.sin(u);
+        const y1 = Math.cos(t) * (3 + Math.cos(u));
+        const z1 = 0.6 * t + Math.sin(u) + distance;
 
         const x2 = Math.sin(t) * (3 + Math.cos(u + incr));
-        const y2 = Math.cos(t) * (3 + Math.cos(u + incr)) + distance;
-        const z2 = 0.6 * t + Math.sin(u + incr);
+        const y2 = Math.cos(t) * (3 + Math.cos(u + incr));
+        const z2 = 0.6 * t + Math.sin(u + incr) + distance;
 
         const x3 = Math.sin(t + incr) * (3 + Math.cos(u));
-        const y3 = Math.cos(t + incr) * (3 + Math.cos(u)) + distance;
-        const z3 = 0.6 * (t + incr) + Math.sin(u);
+        const y3 = Math.cos(t + incr) * (3 + Math.cos(u));
+        const z3 = 0.6 * (t + incr) + Math.sin(u) + distance;
 
         const x4 = Math.sin(t + incr) * (3 + Math.cos(u + incr));
-        const y4 = Math.cos(t + incr) * (3 + Math.cos(u + incr)) + distance;
-        const z4 = 0.6 * (t + incr) + Math.sin(u + incr);
+        const y4 = Math.cos(t + incr) * (3 + Math.cos(u + incr));
+        const z4 = 0.6 * (t + incr) + Math.sin(u + incr) + distance;
 
         points[i].push([
           [x1, y1, z1],
@@ -69,6 +69,7 @@ class App extends React.Component {
           [x3, y3, z3]
         ]);
       }
+      distance += 0.05; //to jest źle... ehh
     }
     points.length = points.length - 1;
 
@@ -102,7 +103,7 @@ class App extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
-    const spiral = this.getBufferGeo(this.getSpiral(0));
+    const spiral = this.getBufferGeo(this.getSpiral(6));
     scene.add(spiral);
     spiral.rotation.x = Math.PI / 2;
     spiral.position.set(0, 18, 0);
@@ -113,18 +114,15 @@ class App extends React.Component {
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
-    // let dis = 0;
     let inc = false;
     const animate = () => {
-      // const pos = spiral.geometry.attributes.position.array;
+      // const pos = spiral.geometry.attributes.position;
       if (ball.position.y < -20 || ball.position.y > -6) {
         inc = !inc;
       }
       if (inc) {
-        // const newSpring = this.getSpiral(++dis);
-        // pos.forEach((e, i, a) => {
-        //   e = newSpring[i];
-        // });
+        // const newSpring = this.getSpiral(20);
+        // pos.array = newSpring;
         ball.position.y -= 0.08;
       } else {
         ball.position.y += 0.08;
