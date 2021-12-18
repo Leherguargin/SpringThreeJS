@@ -6,7 +6,7 @@ import * as THREE from "three";
 class App extends React.Component {
   getBall(x, y, z, r, color = 0xff00ff) {
     const geometry = new THREE.SphereGeometry(r, 32, 16);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const material = new THREE.MeshBasicMaterial({ color });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(x, y, z);
     return sphere;
@@ -16,7 +16,7 @@ class App extends React.Component {
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
     geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-    geometry.attributes.position.needsUpdate = true;
+    geometry.setDrawRange(0, data.length);
     return geometry;
   }
 
@@ -44,9 +44,10 @@ class App extends React.Component {
   getSpringPoints(distance) {
     const points = [[]];
     const PI = Math.PI;
-    const incr = 0.1;
-    const T = 0.1;
-    const U = 0.1;
+    const stalaxDf = 0.5;
+    const incr = stalaxDf;
+    const T = stalaxDf;
+    const U = stalaxDf;
     for (let t = 0, i = 0; t < 8 * PI; t += T, i++) {
       points.push([]);
       for (let u = 0; u < 2 * PI; u += U) {
@@ -106,17 +107,17 @@ class App extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
-    const spring = this.getSpringMesh(this.getSpringPoints(1));
-    scene.add(spring);
+    // const spring = this.getSpringMesh(this.getSpringPoints(1));
+    // scene.add(spring);
+    // spring.rotation.x = Math.PI / 2;
+    // spring.position.set(0, 18, 0);
+
+    const geometry = this.getSpringGeometry(this.getSpringPoints(1));
+    const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
+    const spring = new THREE.Line(geometry, material);
     spring.rotation.x = Math.PI / 2;
     spring.position.set(0, 18, 0);
-
-    // const geometry = this.getSpringGeometry(this.getSpringPoints(1));
-    // const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
-    // const line = new THREE.Line(geometry, material);
-    // line.rotation.x = Math.PI / 2;
-    // line.position.set(0, 18, 0);
-    // scene.add(line);
+    scene.add(spring);
 
     const ball = this.getBall(0, -9, 0, 5);
     scene.add(ball);
@@ -124,24 +125,30 @@ class App extends React.Component {
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
-    let distance = 1;
-    let inc = false;
+    let distance = 2;
+    let incFlag = false;
+    let inc = 0.8;
     const animate = () => {
-      const pos = spring.geometry.attributes.position;
+      const pos = spring.geometry.attributes.position.array;
       if (ball.position.y < -20 || ball.position.y > -6) {
-        inc = !inc;
+        incFlag = !incFlag;
       }
-      if (inc) {
-        distance += 0.1;
-        pos.array = this.getSpringPoints(distance);
-        ball.position.y -= 0.1;
+      if (incFlag) {
+        // distance += inc;
+        const newSpringPoints = this.getSpringPoints(distance);
+        for (let i = 0; i > pos.length; i++) {
+          pos[i] = newSpringPoints[i];
+        }
+        //11934, 5968
+        spring.geometry.setDrawRange(0, 200);
+        spring.geometry.attributes.position.needsUpdate = true;
+        spring.geometry.computeBoundingBox();
+        spring.geometry.computeBoundingSphere();
+        ball.position.y -= inc;
       } else {
-        distance -= 0.1;
-        pos.array = this.getSpringPoints(distance);
-        ball.position.y += 0.1;
+        ball.position.y += inc;
       }
-      spring.geometry.computeBoundingBox();
-      spring.geometry.computeBoundingSphere();
+
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
