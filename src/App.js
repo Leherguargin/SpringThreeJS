@@ -106,17 +106,17 @@ class App extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
-    // const spiral = this.getSpringMesh(this.getSpringPoints(20));
-    // scene.add(spiral);
-    // spiral.rotation.x = Math.PI / 2;
-    // spiral.position.set(0, 18, 0);
+    const spring = this.getSpringMesh(this.getSpringPoints(1));
+    scene.add(spring);
+    spring.rotation.x = Math.PI / 2;
+    spring.position.set(0, 18, 0);
 
-    const geometry = this.getSpringGeometry(this.getSpringPoints(1));
-    const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
-    const line = new THREE.Line(geometry, material);
-    line.rotation.x = Math.PI / 2;
-    line.position.set(0, 18, 0);
-    scene.add(line);
+    // const geometry = this.getSpringGeometry(this.getSpringPoints(1));
+    // const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
+    // const line = new THREE.Line(geometry, material);
+    // line.rotation.x = Math.PI / 2;
+    // line.position.set(0, 18, 0);
+    // scene.add(line);
 
     const ball = this.getBall(0, -9, 0, 5);
     scene.add(ball);
@@ -127,21 +127,21 @@ class App extends React.Component {
     let distance = 1;
     let inc = false;
     const animate = () => {
-      const pos = line.geometry.attributes.position;
+      const pos = spring.geometry.attributes.position;
       if (ball.position.y < -20 || ball.position.y > -6) {
         inc = !inc;
       }
       if (inc) {
-        distance += 0.08;
+        distance += 0.1;
         pos.array = this.getSpringPoints(distance);
-        ball.position.y -= 0.08;
+        ball.position.y -= 0.1;
       } else {
-        distance -= 0.08;
+        distance -= 0.1;
         pos.array = this.getSpringPoints(distance);
-        ball.position.y += 0.08;
+        ball.position.y += 0.1;
       }
-      line.geometry.computeBoundingBox();
-      // line.geometry.computeBoundingSphere();
+      spring.geometry.computeBoundingBox();
+      spring.geometry.computeBoundingSphere();
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
