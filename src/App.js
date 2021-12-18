@@ -19,16 +19,17 @@ class App extends React.Component {
     return cylinder;
   }
 
+  //this.getBall(0, 18, 3, 0.97, 0xffff00);
   getConnector() {
     const connector = new THREE.Group();
-    const ballUp = this.getBall(-0.3, 3, 3, 0.97, 0xffff00);
+    const ballUp = this.getBall(0, 3, 3, 0.97, 0x0000ff);
     const connectorHorizontal = this.getCylinder(1, 3);
     connectorHorizontal.position.set(0, 1.5, 0);
-    const ballMid = this.getBall(0, 3, 0, 0.97, 0xffff00);
+    const ballMid = this.getBall(0, 3, 0, 0.97, 0x0000ff);
     const connectorVertical = this.getCylinder(1, 3);
     connectorVertical.rotateX(Math.PI / 2);
     connectorVertical.position.set(0, 3, 1.5);
-    const ballDown = this.getBall(0, 0, 0, 0.97, 0xffff00);
+    const ballDown = this.getBall(0, 0, 0, 0.97, 0x0000ff);
     connector.add(
       ballUp,
       connectorHorizontal,
@@ -75,7 +76,7 @@ class App extends React.Component {
     const incr = combine;
     const T = combine;
     const U = combine;
-    for (let t = 0, i = 0; t + incr < 8 * PI; t += T, i++) {
+    for (let t = 0, i = 0; t < 8 * PI; t += T, i++) {
       points.push([]);
       for (let u = 0; u < 2 * PI; u += U) {
         const x1 = Math.sin(t) * (3 + Math.cos(u));
@@ -134,19 +135,25 @@ class App extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
+    //łącznik na której wisi sprężyna
+    const connectorUpper = this.getConnector();
+    connectorUpper.rotation.z = Math.PI;
+    connectorUpper.position.y = 21;
+    scene.add(connectorUpper);
+
+    //sprezyna
     const spring = this.getSpringMesh(this.getSpringPoints(1));
     scene.add(spring);
     spring.rotation.x = Math.PI / 2;
     spring.position.set(0, 18, 0);
 
-    // const ball = this.getBall(0, -9, 0, 5);
-    // scene.add(ball);
-
-    // const connectorUpper = this.getBall(0, 18, 3, 0.97, 0xffff00);
-    // scene.add(connectorUpper);
-
+    //łącznik na której wisi kulka
     const connectorLower = this.getConnector();
     scene.add(connectorLower);
+
+    //kulka zawieszona na spręzynie
+    const ball = this.getBall(0, -9, 0, 5);
+    scene.add(ball);
 
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
