@@ -164,42 +164,49 @@ class App extends React.Component {
     scene.add(connectorLower);
 
     //kulka zawieszona na spręzynie
-    const ball = this.getBall(0, -9, 0, 5);
+    const ball = this.getBall(0, -5, 0, 5);
     scene.add(ball);
 
+    //grupa łącząca kulkkę i łącznik dolny do animacji
+    const weight = new THREE.Group(connectorLower, ball);
+    // weight.position.set(0, 0, 0);
+    // scene.add(weight);
+
+    //swiatlo
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
-    // let distance = 1;
-    // let incFlag = false;
-    // let inspector = ball.position.y;
-    // const incBall = 0.5;
-    // const incSpring = 0.05;
+    let distance = 1;
+    let incFlag = true;
+    let inspector = 3;
+    const incBall = 0.5;
+    const incSpring = 0.05;
     const animate = () => {
-      // const positions = spring.geometry.attributes.position.array;
-      // if (inspector < -20 || inspector > -6) {
-      //   incFlag = !incFlag;
-      // }
-      // if (incFlag) {
-      //   distance += incSpring;
-      //   const newPoints = this.getSpringPoints(distance);
-      //   for (let i = 0; i < newPoints.length; i++) {
-      //     positions[i] = newPoints[i];
-      //   }
-      //   ball.position.y = 7 - newPoints[newPoints.length - 1];
-      //   inspector -= incBall;
-      // } else {
-      //   distance -= incSpring;
-      //   const newPoints = this.getSpringPoints(distance);
-      //   for (let i = 0; i < newPoints.length; i++) {
-      //     positions[i] = newPoints[i];
-      //   }
-      //   ball.position.y = 7 - newPoints[newPoints.length - 1];
-      //   ball.translateZ = 1;
-      //   inspector += incBall;
-      // }
+      const positions = spring.geometry.attributes.position.array;
+      if (inspector < -6 || inspector > 6) {
+        incFlag = !incFlag;
+      }
+      if (incFlag) {
+        distance += incSpring;
+        const newPoints = this.getSpringPoints(distance);
+        for (let i = 0; i < newPoints.length; i++) {
+          positions[i] = newPoints[i];
+        }
+        connectorLower.position.y = 15 - newPoints[newPoints.length - 1];
+        ball.position.y = 7 - newPoints[newPoints.length - 1];
+        inspector -= incBall;
+      } else {
+        distance -= incSpring;
+        const newPoints = this.getSpringPoints(distance);
+        for (let i = 0; i < newPoints.length; i++) {
+          positions[i] = newPoints[i];
+        }
+        connectorLower.position.y = 15 - newPoints[newPoints.length - 1];
+        ball.position.y = 7 - newPoints[newPoints.length - 1];
+        inspector += incBall;
+      }
 
-      // spring.geometry.attributes.position.needsUpdate = true;
+      spring.geometry.attributes.position.needsUpdate = true;
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
