@@ -4,6 +4,13 @@ import React from "react";
 import * as THREE from "three";
 
 class App extends React.Component {
+  getCube(x, y, z) {
+    const geometry = new THREE.BoxGeometry(x, y, z);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    return cube;
+  }
+
   getBall(x, y, z, r, color = 0xff00ff) {
     const geometry = new THREE.SphereGeometry(r, 32, 16);
     const material = new THREE.MeshBasicMaterial({ color });
@@ -134,6 +141,11 @@ class App extends React.Component {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
+
+    //sufit
+    const ceil = this.getCube(10, 5, 10);
+    ceil.position.set(0, 22, 0);
+    scene.add(ceil);
 
     //łącznik na której wisi sprężyna
     const connectorUpper = this.getConnector();
