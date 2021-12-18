@@ -23,8 +23,8 @@ class App extends React.Component {
   getBufferGeo(data, color = 0x00ff00) {
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
-    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-    geometry.attributes.position.needsUpdate = true;
+    geometry.getAttribute("position", new THREE.BufferAttribute(vertices, 3));
+    // geometry.attributes.position.needsUpdate = true;
     const material = new THREE.MeshBasicMaterial({ color });
     const mesh = new THREE.Mesh(geometry, material);
     return mesh;
@@ -129,8 +129,8 @@ class App extends React.Component {
     pivot.add(camera);
     scene.add(pivot);
 
-    // const axesHelper = new THREE.AxesHelper(125);
-    // scene.add(axesHelper);
+    const axesHelper = new THREE.AxesHelper(125);
+    scene.add(axesHelper);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -152,17 +152,15 @@ class App extends React.Component {
     let dis = 0;
     let inc = false;
     const animate = () => {
-      const pos = spiral.geometry.attributes.position.array;
+      // const pos = spiral.geometry.attributes.position.array;
       if (ball.position.y < -20 || ball.position.y > -6) {
         inc = !inc;
       }
       if (inc) {
-        const newSpring = this.getSpiral(++dis);
-        pos.forEach((e, i, a) => {
-          e = newSpring[i];
-        });
-        spiral.geometry.computeBoundingBox();
-        spiral.geometry.computeBoundingSphere();
+        // const newSpring = this.getSpiral(++dis);
+        // pos.forEach((e, i, a) => {
+        //   e = newSpring[i];
+        // });
         ball.position.y -= 0.08;
       } else {
         ball.position.y += 0.08;
@@ -188,10 +186,7 @@ class App extends React.Component {
 
       pivot.rotation.x -= event.movementY * sensitivity;
       pivot.rotation.y -= event.movementX * sensitivity;
-
-      requestAnimationFrame(animate);
     });
-
     renderer.domElement.addEventListener("mousedown", (event) => {
       press = true;
     });
