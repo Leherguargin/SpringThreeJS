@@ -13,7 +13,6 @@ class App extends React.Component {
   }
 
   getSpringGeometry(data) {
-    console.log(data.length);
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
     geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
@@ -130,30 +129,17 @@ class App extends React.Component {
     let incFlag = false;
     let inc = 0.8;
     const animate = () => {
+      const positions = spring.geometry.attributes.position.array;
       if (ball.position.y < -20 || ball.position.y > -6) {
         incFlag = !incFlag;
       }
       if (incFlag) {
         // distance += inc;
-        const positions = spring.geometry.attributes.position.array;
         const newPoints = this.getSpringPoints(distance);
-        let x, y, z, index;
-        x = y = z = index = 0;
-
-        for (let i = 0, l = 5000; i < l; i++) {
-          // positions[index++] = newPoints[index];
-          positions[index++] = x;
-          positions[index++] = y;
-          positions[index++] = z;
-          x = newPoints[index - 3];
-          y = newPoints[index - 2];
-          z = newPoints[index - 1];
+        for (let i = 0; i < newPoints.length; i++) {
+          positions[i] = newPoints[i];
         }
-        //11934, 5968
-        // spring.geometry.setDrawRange(0, 200);
         spring.geometry.attributes.position.needsUpdate = true;
-        // spring.geometry.computeBoundingBox();
-        // spring.geometry.computeBoundingSphere();
         ball.position.y -= inc;
       } else {
         ball.position.y += inc;
