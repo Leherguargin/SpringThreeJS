@@ -127,26 +127,30 @@ class App extends React.Component {
 
     let distance = 1;
     let incFlag = false;
-    let inc = 0.01;
+    let inspector = ball.position.y;
+    const incBall = 0.5;
+    const incSpring = 0.05;
     const animate = () => {
       const positions = spring.geometry.attributes.position.array;
-      if (ball.position.y < -20 || ball.position.y > -6) {
+      if (inspector < -20 || inspector > -6) {
         incFlag = !incFlag;
       }
       if (incFlag) {
-        distance += inc;
+        distance += incSpring;
         const newPoints = this.getSpringPoints(distance);
         for (let i = 0; i < newPoints.length; i++) {
           positions[i] = newPoints[i];
         }
-        ball.position.y -= inc;
+        ball.position.y = 6 - newPoints[newPoints.length - 1];
+        inspector -= incBall;
       } else {
-        distance -= inc;
+        distance -= incSpring;
         const newPoints = this.getSpringPoints(distance);
         for (let i = 0; i < newPoints.length; i++) {
           positions[i] = newPoints[i];
         }
-        ball.position.y += inc;
+        ball.position.y = 6 - newPoints[newPoints.length - 1];
+        inspector += incBall;
       }
 
       spring.geometry.attributes.position.needsUpdate = true;
