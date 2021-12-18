@@ -136,18 +136,18 @@ class App extends React.Component {
       if (incFlag) {
         // distance += inc;
         const positions = spring.geometry.attributes.position.array;
-
+        const newPoints = this.getSpringPoints(distance);
         let x, y, z, index;
         x = y = z = index = 0;
 
         for (let i = 0, l = 5000; i < l; i++) {
+          // positions[index++] = newPoints[index];
           positions[index++] = x;
           positions[index++] = y;
           positions[index++] = z;
-
-          x += (Math.random() - 0.5) * 30;
-          y += (Math.random() - 0.5) * 30;
-          z += (Math.random() - 0.5) * 30;
+          x = newPoints[index - 3];
+          y = newPoints[index - 2];
+          z = newPoints[index - 1];
         }
         //11934, 5968
         // spring.geometry.setDrawRange(0, 200);
