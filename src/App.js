@@ -52,34 +52,33 @@ class App extends React.Component {
       for (let u = 0; u < 2 * PI; u += U) {
         const x1 = Math.sin(t) * (3 + Math.cos(u));
         const y1 = Math.cos(t) * (3 + Math.cos(u));
-        const z1 = 0.6 * t + Math.sin(u) + distance;
+        const z1 = 0.6 * t * distance + Math.sin(u);
 
         const x2 = Math.sin(t) * (3 + Math.cos(u + incr));
         const y2 = Math.cos(t) * (3 + Math.cos(u + incr));
-        const z2 = 0.6 * t + Math.sin(u + incr) + distance;
+        const z2 = 0.6 * t * distance + Math.sin(u + incr);
 
         const x3 = Math.sin(t + incr) * (3 + Math.cos(u));
         const y3 = Math.cos(t + incr) * (3 + Math.cos(u));
-        const z3 = 0.6 * (t + incr) + Math.sin(u) + distance;
+        const z3 = 0.6 * (t + incr) * distance + Math.sin(u);
 
         const x4 = Math.sin(t + incr) * (3 + Math.cos(u + incr));
         const y4 = Math.cos(t + incr) * (3 + Math.cos(u + incr));
-        const z4 = 0.6 * (t + incr) + Math.sin(u + incr) + distance;
+        const z4 = 0.6 * (t + incr) * distance + Math.sin(u + incr);
 
         points[i].push([
           [x1, y1, z1],
           [x2, y2, z2],
-          [x4, y4, z4],
-          [x3, y3, z3]
+          [x3, y3, z3],
+          [x4, y4, z4]
         ]);
       }
-      // distance += 0.05; //to jest źle... ehh
     }
     points.length = points.length - 1;
 
     const arrPoints = [];
     points.flat().forEach((q) => {
-      const p = this.drawQuad(q, "#00ff00");
+      const p = this.drawQuad(q, "#00ffff");
       arrPoints.push(p);
     });
     return arrPoints.flat();
@@ -112,9 +111,11 @@ class App extends React.Component {
     // spiral.rotation.x = Math.PI / 2;
     // spiral.position.set(0, 18, 0);
 
-    const geometry = this.getSpringGeometry(this.getSpringPoints(0));
+    const geometry = this.getSpringGeometry(this.getSpringPoints(1));
     const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
     const line = new THREE.Line(geometry, material);
+    line.rotation.x = Math.PI / 2;
+    line.position.set(0, 18, 0);
     scene.add(line);
 
     const ball = this.getBall(0, -9, 0, 5);
@@ -123,21 +124,24 @@ class App extends React.Component {
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
+    let distance = 1;
     let inc = false;
     const animate = () => {
-      // const pos = spiral.geometry.attributes.position;
+      const pos = line.geometry.attributes.position;
       if (ball.position.y < -20 || ball.position.y > -6) {
         inc = !inc;
       }
       if (inc) {
-        // const newSpring = this.getSpiral(20);
-        // pos.array = newSpring;
+        distance += 0.08;
+        pos.array = this.getSpringPoints(distance);
         ball.position.y -= 0.08;
       } else {
+        distance -= 0.08;
+        pos.array = this.getSpringPoints(distance);
         ball.position.y += 0.08;
       }
-      // spiral.geometry.computeBoundingBox();
-      // spiral.geometry.computeBoundingSphere();
+      line.geometry.computeBoundingBox();
+      // line.geometry.computeBoundingSphere();
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
