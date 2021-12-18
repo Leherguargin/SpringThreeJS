@@ -26,7 +26,6 @@ class App extends React.Component {
     return cylinder;
   }
 
-  //this.getBall(0, 18, 3, 0.97, 0xffff00);
   getConnector() {
     const connector = new THREE.Group();
     const ballUp = this.getBall(0, 3, 3, 0.97, 0x0000ff);
@@ -166,11 +165,6 @@ class App extends React.Component {
     //kulka zawieszona na spręzynie
     const ball = this.getBall(0, -5, 0, 5);
     scene.add(ball);
-
-    //grupa łącząca kulkkę i łącznik dolny do animacji
-    const weight = new THREE.Group(connectorLower, ball);
-    // weight.position.set(0, 0, 0);
-    // scene.add(weight);
 
     //swiatlo
     const light = new THREE.AmbientLight(0xffffff);
