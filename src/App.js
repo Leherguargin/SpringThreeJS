@@ -51,7 +51,7 @@ class App extends React.Component {
     const U = stalaxDf;
     for (let t = 0, i = 0; t + incr < 8 * PI; t += T, i++) {
       points.push([]);
-      for (let u = 0; u + incr < 2 * PI; u += U) {
+      for (let u = 0; u < 2 * PI; u += U) {
         const x1 = Math.sin(t) * (3 + Math.cos(u));
         const y1 = Math.cos(t) * (3 + Math.cos(u));
         const z1 = 0.6 * t * distance + Math.sin(u);
@@ -108,17 +108,17 @@ class App extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
-    // const spring = this.getSpringMesh(this.getSpringPoints(1));
-    // scene.add(spring);
-    // spring.rotation.x = Math.PI / 2;
-    // spring.position.set(0, 18, 0);
-
-    const geometry = this.getSpringGeometry(this.getSpringPoints(1));
-    const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
-    const spring = new THREE.Line(geometry, material);
+    const spring = this.getSpringMesh(this.getSpringPoints(1));
+    scene.add(spring);
     spring.rotation.x = Math.PI / 2;
     spring.position.set(0, 18, 0);
-    scene.add(spring);
+
+    // const geometry = this.getSpringGeometry(this.getSpringPoints(1));
+    // const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
+    // const spring = new THREE.Line(geometry, material);
+    // spring.rotation.x = Math.PI / 2;
+    // spring.position.set(0, 18, 0);
+    // scene.add(spring);
 
     const ball = this.getBall(0, -9, 0, 5);
     scene.add(ball);
@@ -130,21 +130,30 @@ class App extends React.Component {
     let incFlag = false;
     let inc = 0.8;
     const animate = () => {
-      const pos = spring.geometry.attributes.position.array;
       if (ball.position.y < -20 || ball.position.y > -6) {
         incFlag = !incFlag;
       }
       if (incFlag) {
         // distance += inc;
-        const newSpringPoints = this.getSpringPoints(distance);
-        for (let i = 0; i > pos.length; i++) {
-          pos[i] = newSpringPoints[i];
+        const positions = spring.geometry.attributes.position.array;
+
+        let x, y, z, index;
+        x = y = z = index = 0;
+
+        for (let i = 0, l = 5000; i < l; i++) {
+          positions[index++] = x;
+          positions[index++] = y;
+          positions[index++] = z;
+
+          x += (Math.random() - 0.5) * 30;
+          y += (Math.random() - 0.5) * 30;
+          z += (Math.random() - 0.5) * 30;
         }
         //11934, 5968
         // spring.geometry.setDrawRange(0, 200);
         spring.geometry.attributes.position.needsUpdate = true;
-        spring.geometry.computeBoundingBox();
-        spring.geometry.computeBoundingSphere();
+        // spring.geometry.computeBoundingBox();
+        // spring.geometry.computeBoundingSphere();
         ball.position.y -= inc;
       } else {
         ball.position.y += inc;
