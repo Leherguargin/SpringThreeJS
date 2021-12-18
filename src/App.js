@@ -141,7 +141,7 @@ class App extends React.Component {
         for (let i = 0; i < newPoints.length; i++) {
           positions[i] = newPoints[i];
         }
-        ball.position.y = 6 - newPoints[newPoints.length - 1];
+        ball.position.y = 7 - newPoints[newPoints.length - 1];
         inspector -= incBall;
       } else {
         distance -= incSpring;
@@ -149,7 +149,8 @@ class App extends React.Component {
         for (let i = 0; i < newPoints.length; i++) {
           positions[i] = newPoints[i];
         }
-        ball.position.y = 6 - newPoints[newPoints.length - 1];
+        ball.position.y = 7 - newPoints[newPoints.length - 1];
+        ball.translateZ = 1;
         inspector += incBall;
       }
 
