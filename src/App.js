@@ -4,7 +4,7 @@ import React from "react";
 import * as THREE from "three";
 
 class App extends React.Component {
-  getBall(x, y, z, r, color = "#00ff00") {
+  getBall(x, y, z, r, color = 0xff00ff) {
     const geometry = new THREE.SphereGeometry(r, 32, 16);
     const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     const sphere = new THREE.Mesh(geometry, material);
@@ -12,13 +12,17 @@ class App extends React.Component {
     return sphere;
   }
 
-  getBufferGeo(data, color = 0x00ff00) {
+  getSpringGeometry(data) {
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
     geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
     geometry.attributes.position.needsUpdate = true;
+    return geometry;
+  }
+
+  getSpringMesh(data, color = 0x00ff00) {
     const material = new THREE.MeshBasicMaterial({ color });
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(this.getSpringGeometry(data), material);
     return mesh;
   }
 
@@ -37,7 +41,7 @@ class App extends React.Component {
     return newPoints.flat();
   }
 
-  getSpiral(distance) {
+  getSpringPoints(distance) {
     const points = [[]];
     const PI = Math.PI;
     const incr = 0.1;
@@ -69,7 +73,7 @@ class App extends React.Component {
           [x3, y3, z3]
         ]);
       }
-      distance += 0.05; //to jest źle... ehh
+      // distance += 0.05; //to jest źle... ehh
     }
     points.length = points.length - 1;
 
@@ -103,10 +107,15 @@ class App extends React.Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
-    const spiral = this.getBufferGeo(this.getSpiral(6));
-    scene.add(spiral);
-    spiral.rotation.x = Math.PI / 2;
-    spiral.position.set(0, 18, 0);
+    // const spiral = this.getSpringMesh(this.getSpringPoints(20));
+    // scene.add(spiral);
+    // spiral.rotation.x = Math.PI / 2;
+    // spiral.position.set(0, 18, 0);
+
+    const geometry = this.getSpringGeometry(this.getSpringPoints(0));
+    const material = new THREE.LineBasicMaterial({ color: 0xff00ff });
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
 
     const ball = this.getBall(0, -9, 0, 5);
     scene.add(ball);
@@ -127,8 +136,8 @@ class App extends React.Component {
       } else {
         ball.position.y += 0.08;
       }
-      spiral.geometry.computeBoundingBox();
-      spiral.geometry.computeBoundingSphere();
+      // spiral.geometry.computeBoundingBox();
+      // spiral.geometry.computeBoundingSphere();
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
