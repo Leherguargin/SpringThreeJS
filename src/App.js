@@ -12,6 +12,33 @@ class App extends React.Component {
     return sphere;
   }
 
+  getCylinder(radius, height) {
+    const geometry = new THREE.CylinderGeometry(radius, radius, height, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const cylinder = new THREE.Mesh(geometry, material);
+    return cylinder;
+  }
+
+  getConnector() {
+    const connector = new THREE.Group();
+    const ballUp = this.getBall(-0.3, 3, 3, 0.97, 0xffff00);
+    const connectorHorizontal = this.getCylinder(1, 3);
+    connectorHorizontal.position.set(0, 1.5, 0);
+    const ballMid = this.getBall(0, 3, 0, 0.97, 0xffff00);
+    const connectorVertical = this.getCylinder(1, 3);
+    connectorVertical.rotateX(Math.PI / 2);
+    connectorVertical.position.set(0, 3, 1.5);
+    const ballDown = this.getBall(0, 0, 0, 0.97, 0xffff00);
+    connector.add(
+      ballUp,
+      connectorHorizontal,
+      ballMid,
+      connectorVertical,
+      ballDown
+    );
+    return connector;
+  }
+
   getSpringGeometry(data) {
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
@@ -112,42 +139,48 @@ class App extends React.Component {
     spring.rotation.x = Math.PI / 2;
     spring.position.set(0, 18, 0);
 
-    const ball = this.getBall(0, -9, 0, 5);
-    scene.add(ball);
+    // const ball = this.getBall(0, -9, 0, 5);
+    // scene.add(ball);
+
+    // const connectorUpper = this.getBall(0, 18, 3, 0.97, 0xffff00);
+    // scene.add(connectorUpper);
+
+    const connectorLower = this.getConnector();
+    scene.add(connectorLower);
 
     const light = new THREE.AmbientLight(0xffffff);
     scene.add(light);
 
-    let distance = 1;
-    let incFlag = false;
-    let inspector = ball.position.y;
-    const incBall = 0.5;
-    const incSpring = 0.05;
+    // let distance = 1;
+    // let incFlag = false;
+    // let inspector = ball.position.y;
+    // const incBall = 0.5;
+    // const incSpring = 0.05;
     const animate = () => {
-      const positions = spring.geometry.attributes.position.array;
-      if (inspector < -20 || inspector > -6) {
-        incFlag = !incFlag;
-      }
-      if (incFlag) {
-        distance += incSpring;
-        const newPoints = this.getSpringPoints(distance);
-        for (let i = 0; i < newPoints.length; i++) {
-          positions[i] = newPoints[i];
-        }
-        ball.position.y = 7 - newPoints[newPoints.length - 1];
-        inspector -= incBall;
-      } else {
-        distance -= incSpring;
-        const newPoints = this.getSpringPoints(distance);
-        for (let i = 0; i < newPoints.length; i++) {
-          positions[i] = newPoints[i];
-        }
-        ball.position.y = 7 - newPoints[newPoints.length - 1];
-        ball.translateZ = 1;
-        inspector += incBall;
-      }
+      // const positions = spring.geometry.attributes.position.array;
+      // if (inspector < -20 || inspector > -6) {
+      //   incFlag = !incFlag;
+      // }
+      // if (incFlag) {
+      //   distance += incSpring;
+      //   const newPoints = this.getSpringPoints(distance);
+      //   for (let i = 0; i < newPoints.length; i++) {
+      //     positions[i] = newPoints[i];
+      //   }
+      //   ball.position.y = 7 - newPoints[newPoints.length - 1];
+      //   inspector -= incBall;
+      // } else {
+      //   distance -= incSpring;
+      //   const newPoints = this.getSpringPoints(distance);
+      //   for (let i = 0; i < newPoints.length; i++) {
+      //     positions[i] = newPoints[i];
+      //   }
+      //   ball.position.y = 7 - newPoints[newPoints.length - 1];
+      //   ball.translateZ = 1;
+      //   inspector += incBall;
+      // }
 
-      spring.geometry.attributes.position.needsUpdate = true;
+      // spring.geometry.attributes.position.needsUpdate = true;
       renderer.render(scene, camera, animate);
       requestAnimationFrame(animate);
     };
