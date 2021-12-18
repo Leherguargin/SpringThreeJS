@@ -15,8 +15,8 @@ class App extends React.Component {
   getBufferGeo(data, color = 0x00ff00) {
     const geometry = new THREE.BufferGeometry();
     const vertices = new Float32Array(data);
-    geometry.getAttribute("position", new THREE.BufferAttribute(vertices, 3));
-    // geometry.attributes.position.needsUpdate = true;
+    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+    geometry.attributes.position.needsUpdate = true;
     const material = new THREE.MeshBasicMaterial({ color });
     const mesh = new THREE.Mesh(geometry, material);
     return mesh;
@@ -103,7 +103,6 @@ class App extends React.Component {
     this.mount.appendChild(renderer.domElement);
 
     const spiral = this.getBufferGeo(this.getSpiral(0));
-
     scene.add(spiral);
     spiral.rotation.x = Math.PI / 2;
     spiral.position.set(0, 18, 0);
@@ -136,7 +135,7 @@ class App extends React.Component {
       requestAnimationFrame(animate);
     };
 
-    this.addCameraEvents(renderer, camera, animate, pivot); //przyspiesza animacje xD
+    this.addCameraEvents(renderer, camera, animate, pivot);
     renderer.render(scene, camera, animate);
     animate(this);
   }
