@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+.button {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 150px;
+  height: 50px;
+  background-color: #282c34;
+  color: white;
+  border: black solid 1px;
+  border-radius: 1px;
+}
+
+.first {
+  top: 5px;
+}
+
+.secound {
+  top: 60px;
+}
+
+.third {
+  top: 115px;
+}
+
+.fourth {
+  top: 170px;
+}

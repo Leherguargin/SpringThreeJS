@@ -4,6 +4,14 @@ import React from "react";
 import * as THREE from "three";
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.goLeft = this.goLeft.bind(this);
+    this.goRight = this.goRight.bind(this);
+    this.goUp = this.goUp.bind(this);
+    this.goDown = this.goDown.bind(this);
+  }
+
   getTexture(index) {
     const image = new Image();
     const imgs = [
@@ -148,6 +156,7 @@ class App extends React.Component {
       1000
     );
     camera.position.set(0, 0, 40);
+    this.camera = camera;
     camera.lookAt(0, 0, 0);
     const pivot = new THREE.Group();
     pivot.position.set(0, 0, 0);
@@ -207,7 +216,7 @@ class App extends React.Component {
           positions[i] = newPoints[i];
         }
         connectorLower.position.y = 15 - newPoints[newPoints.length - 1];
-        ball.position.y = 7 - newPoints[newPoints.length - 1];
+        ball.position.y = 10 - newPoints[newPoints.length - 1];
         inspector -= incBall;
       } else {
         distance -= incSpring;
@@ -216,7 +225,7 @@ class App extends React.Component {
           positions[i] = newPoints[i];
         }
         connectorLower.position.y = 15 - newPoints[newPoints.length - 1];
-        ball.position.y = 7 - newPoints[newPoints.length - 1];
+        ball.position.y = 10 - newPoints[newPoints.length - 1];
         inspector += incBall;
       }
 
@@ -264,12 +273,44 @@ class App extends React.Component {
       camera.lookAt(0, 0, 0);
       camera.position.set(0, 0, 40);
     });
+    renderer.domElement.addEventListener("keydown", (event) => {
+      camera.position.x++;
+    });
+  }
+
+  goLeft(event) {
+    this.camera.position.x--;
+  }
+
+  goRight(event) {
+    this.camera.position.x++;
+  }
+
+  goUp(event) {
+    this.camera.position.y++;
+  }
+
+  goDown(event) {
+    this.camera.position.y--;
   }
 
   render() {
     return (
       <>
-        <div className="App" ref={(ref) => (this.mount = ref)}></div>
+        <div className="App" ref={(ref) => (this.mount = ref)}>
+          <button className="button" onClick={this.goLeft}>
+            left
+          </button>
+          <button className="button secound" onClick={this.goRight}>
+            right
+          </button>
+          <button className="button third" onClick={this.goUp}>
+            up
+          </button>
+          <button className="button fourth" onClick={this.goDown}>
+            down
+          </button>
+        </div>
       </>
     );
   }
